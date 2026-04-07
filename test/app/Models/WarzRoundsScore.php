@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class WarzRoundsScores extends Model
+class WarzRoundsScore extends Model
 {
     /** @use HasFactory<\Database\Factories\WarzFactory> */
     use HasFactory;
@@ -37,7 +37,7 @@ class WarzRoundsScores extends Model
 
     public function round(): BelongsTo
     {
-        return $this->belongsTo(WarzRounds::class, 'warz_rounds_id');
+        return $this->belongsTo(WarzRound::class, 'warz_rounds_id');
     }
 
     public function war(): BelongsTo

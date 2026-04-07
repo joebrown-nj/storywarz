@@ -43,6 +43,14 @@
                 </h2>
             @endif
 
+            <a href="{{ route('warz.create') }}" class="flex rounded-md bg-white/10 px-2.5 py-1.5 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20">
+                Create A War
+            </a>
+
+            <a href="{{ route('warz') }}" class="flex rounded-md bg-white/10 px-2.5 py-1.5 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20">
+                Your Wars
+            </a>
+
             <h2 class="mb-2 text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
                 {{ __('Points') }}
             </h2>

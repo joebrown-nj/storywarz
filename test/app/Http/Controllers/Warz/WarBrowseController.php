@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Warz;
 
 use App\Models\ShowRoundSummary;
-use App\Models\Stories;
+use App\Models\Story;
 use App\Models\UserWarz;
 use App\Models\Warz;
-use App\Models\WarzRounds;
-use App\Models\WarzRoundsScores;
-use App\Models\WarzRoundsVotes;
+use App\Models\WarzRound;
+use App\Models\WarzRoundsScore;
+use App\Models\WarzRoundsVote;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,65 +40,55 @@ class WarBrowseController extends WarController
         ]);
     }
 
-    public function show($warId): View | RedirectResponse
+    public function show(Warz $war): View | RedirectResponse
     {
-        $war = Warz::where('id', $warId)->first();
-        if (!$war) {
-            return redirect(route('warz', absolute: false))->withErrors(['War not found.']);
-        }
-
         if ($war->status == 'created') {
             return redirect(route('warz', absolute: false))->withErrors(['War is not ready to begin.']);
         }
 
-        if ($this->showRoundSummary($warId)) {
-            return redirect(route('warz.showSummary', $warId));
+        if ($this->showRoundSummary($war->id)) {
+            return redirect(route('warz.showSummary', $war->id));
         }
 
-        $story = WarzRounds::query()
-            ->currentWithStory($warId)
+        $story = WarzRound::query()
+            ->currentWithStory($war->id)
             ->first();
 
         if (!$story) {
-            $story = $this->warRoundCreate($warId);
+            $story = $this->warRoundCreate($war->id);
         }
 
-        $roundCount = WarzRounds::where('warz_id', $warId)->count();
+        $storyNumber = WarzRound::storyNumber($war->id);
 
         return view('warz.show', [
             'war' => $war,
-            'users' => $this->getWarUsers($warId),
-            'round' => $roundCount,
-            'doublePoints' => $this->isThisRoundDoublePoints($roundCount),
+            'users' => $this->getWarUsers($war->id),
+            'round' => $storyNumber,
+            'doublePoints' => $this->isThisRoundDoublePoints($storyNumber),
             'comments' => $war->comments()->orderBy('created_at', 'desc')->get(),
             'story' => $story,
-            'youVotedFor' => WarzRoundsVotes::findUserVoteForRound(Auth::id(), $story->warz_rounds_id),
+            'youVotedFor' => WarzRoundsVote::findUserVoteForRound(Auth::id(), $story->warz_rounds_id),
             'votes' => $this->getWarRoundVotes($story->warz_rounds_id),
-            'tie' => $roundCount >= env('WAR_MAX_ROUNDS') ? $this->checkForTie($warId) : false,
-            'yourScore' => WarzRoundsScores::where('user_id', Auth::id())->where('warz_id', $warId)->sum('score'),
+            'tie' => $storyNumber >= env('WAR_MAX_ROUNDS') ? $this->checkForTie($war->id) : false,
+            'yourScore' => WarzRoundsScore::where('user_id', Auth::id())->where('warz_id', $war->id)->sum('score'),
         ]);
     }
 
-    public function summary($warId): View | RedirectResponse
+    public function summary(Warz $war): View | RedirectResponse
     {
-        if (!$this->showRoundSummary($warId)) {
-            return redirect(route('warz.show', $warId));
+        if (!$this->showRoundSummary($war->id)) {
+            return redirect(route('warz.show', $war->id));
         }
 
-        $war = Warz::where('id', $warId)->first();
-        if (!$war) {
-            return redirect(route('warz', absolute: false))->withErrors(['War not found.']);
-        }
-
-        $lastRound = WarzRounds::query()->latestCompleted($warId)->first();
-        $lastStory = Stories::findWithAuthor($lastRound->stories_id);
-        $roundCount = WarzRounds::where('warz_id', $warId)->count();
-        $tie = $roundCount >= env('WAR_MAX_ROUNDS') ? $this->checkForTie($warId) : false;
+        $lastRound = WarzRound::query()->latestCompleted($war->id)->first();
+        $lastStory = Story::findWithAuthor($lastRound->stories_id);
+        $storyNumber = WarzRound::storyNumber($war->id);
+        $tie = $storyNumber >= env('WAR_MAX_ROUNDS') ? $this->checkForTie($war->id) : false;
 
         return view('warz.summary', [
             'war' => $war,
-            'users' => $this->getWarUsers($warId),
-            'round' => $roundCount >= env('WAR_MAX_ROUNDS') && !$tie ? $roundCount : $roundCount - 1,
+            'users' => $this->getWarUsers($war->id),
+            'round' => $storyNumber >= env('WAR_MAX_ROUNDS') && !$tie ? $storyNumber : $storyNumber - 1,
             'comments' => $war->comments()->orderBy('created_at', 'desc')->get(),
             'story' => $lastStory,
             'votes' => $this->getWarRoundVotes($lastRound->id),

@@ -51,7 +51,7 @@ class Warz extends Model
 
     public function stories(): HasMany
     {
-        return $this->hasMany(Stories::class);
+        return $this->hasMany(Story::class);
     }
 
     public function comments(): HasMany

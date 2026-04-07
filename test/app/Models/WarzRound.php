@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class WarzRounds extends Model
+class WarzRound extends Model
 {
     /** @use HasFactory<\Database\Factories\WarzFactory> */
     use HasFactory;
+
+    protected $table = 'warz_rounds';
 
     /**
      * The attributes that are mass assignable.
@@ -37,7 +39,7 @@ class WarzRounds extends Model
 
     public function story(): BelongsTo
     {
-        return $this->belongsTo(Stories::class, 'stories_id');
+        return $this->belongsTo(Story::class, 'stories_id');
     }
 
     public function scopeCurrentWithStory(Builder $query, int $warId): Builder
@@ -54,5 +56,10 @@ class WarzRounds extends Model
         return $query->where('warz_id', $warId)
             ->where('complete', true)
             ->orderBy('id', 'desc');
+    }
+
+    public static function storyNumber(int $warId): int
+    {
+        return static::where('warz_id', $warId)->count();
     }
 }

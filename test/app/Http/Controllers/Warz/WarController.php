@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Warz;
 
 use App\Http\Controllers\Controller;
 use App\Models\ShowRoundSummary;
-use App\Models\Stories;
+use App\Models\Story;
 use App\Models\User;
 use App\Models\Warz;
-use App\Models\WarzRounds;
-use App\Models\WarzRoundsVotes;
+use App\Models\WarzRound;
+use App\Models\WarzRoundsVote;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,28 +26,32 @@ class WarController extends Controller
 
     protected function getWarRoundVotes($warRoundId)
     {
-        return WarzRoundsVotes::query()
+        return WarzRoundsVote::query()
             ->withVoteDetails()
             ->forRound($warRoundId)
             ->get();
     }
 
-    protected function isThisRoundDoublePoints($roundCount): bool
+    protected function isThisRoundDoublePoints($storyNumber): bool
     {
-        return $roundCount > 4;
+        return $storyNumber > 4;
     }
 
     protected function checkForTie($warId): array
     {
         $warUsers = $this->getWarUsers($warId);
+        if(!$warUsers[0]->score) {
+            return [];
+        }
+
         $tiedUsers = array_filter($warUsers->toArray(), function ($user) use ($warUsers) {
-            return $user->score == $warUsers[0]->score;
+            return $user['score'] == $warUsers[0]->score;
         });
 
         return count($tiedUsers) > 1 ? $tiedUsers : [];
     }
 
-    protected function warRoundCreate($warId): WarzRounds | RedirectResponse | bool
+    protected function warRoundCreate($warId): WarzRound | RedirectResponse | bool
     {
         $war = Warz::find($warId);
         if (!$war) {
@@ -56,7 +60,7 @@ class WarController extends Controller
 
         $tie = $this->checkForTie($warId);
 
-        $rounds = WarzRounds::where('warz_id', $warId)->where('complete', true)->count();
+        $rounds = WarzRound::where('warz_id', $warId)->where('complete', true)->count();
         if ($rounds >= env('WAR_MAX_ROUNDS') && empty($tie)) {
             $war->status = 'completed';
             $war->save();
@@ -69,7 +73,7 @@ class WarController extends Controller
         $story->story_was_used = true;
         $story->save();
 
-        $nextRound = WarzRounds::create([
+        $nextRound = WarzRound::create([
             'warz_id' => $warId,
             'stories_id' => $story->id,
         ]);
@@ -78,7 +82,7 @@ class WarController extends Controller
             $users = $this->getWarUsers($warId);
             foreach ($users as $user) {
                 if ($user->score < $users[0]->score) {
-                    WarzRoundsVotes::create([
+                    WarzRoundsVote::create([
                         'warz_rounds_id' => $nextRound->id,
                         'user_id' => $user->id,
                         'warz_id' => $warId,
@@ -97,7 +101,7 @@ class WarController extends Controller
         $warriors = $this->getWarUsers($id);
 
         foreach ($warriors as $warrior) {
-            if (Stories::countForWarrior($id, $warrior->id) < 3) {
+            if (Story::countForWarrior($id, $warrior->id) < 3) {
                 return;
             }
         }

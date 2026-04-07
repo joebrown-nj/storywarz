@@ -14,28 +14,31 @@ Route::view('/dashboard', 'dashboard')
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('warz')->group(function () {
+        Route::controller(WarManagementController::class)->group(function () {
+            Route::get('create', 'create')->name('warz.create');
+            Route::get('edit/{war}', 'edit')->name('warz.edit');
+            Route::patch('update/{war}', 'update')->name('warz.update');
+        });
+
         Route::controller(WarBrowseController::class)->group(function () {
             Route::get('/', 'index')->name('warz');
-            Route::get('{id}', 'show')->name('warz.show');
-            Route::get('{id}/summary', 'summary')->name('warz.showSummary');
-            Route::get('{id}/next-story', 'nextStory')->name('warz.nextStory');
-            Route::post('comment/{id}', 'comment')->name('warz.comment');
+            Route::get('{war}', 'show')->name('warz.show');
+            Route::get('{war}/summary', 'summary')->name('warz.showSummary');
+            Route::get('{war}/next-story', 'nextStory')->name('warz.nextStory');
+            Route::post('comment/{war}', 'comment')->name('warz.comment');
         });
 
         Route::controller(WarManagementController::class)->group(function () {
-            Route::get('create', 'create')->name('warz.create');
-            Route::get('edit/{id}', 'edit')->name('warz.edit');
-            Route::patch('update/{id}', 'update')->name('warz.update');
-            Route::get('{warId}/delete-warrior/{userId}', 'deleteWarrior')->name('warrior.delete');
+            Route::get('{war}/delete-warrior/{userId}', 'deleteWarrior')->name('warrior.delete');
         });
 
         Route::controller(WarStoryController::class)->group(function () {
             Route::get('{id}/removeStory', 'removeStory')->name('warz.removeStory');
             Route::get('{id}/add-story', 'addStoryForm')->name('warz.addStoryForm');
-            Route::patch('{id}/addStories', 'addStories')->name('warz.addStories');
+            Route::patch('{war}/addStories', 'addStories')->name('warz.addStories');
         });
 
-        Route::post('{war}/vote', [WarRoundController::class, 'vote'])->name('warz.vote');
+        Route::post('{warId}/vote', [WarRoundController::class, 'vote'])->name('warz.vote');
     });
 
     Route::controller(ProfileController::class)->group(function () {

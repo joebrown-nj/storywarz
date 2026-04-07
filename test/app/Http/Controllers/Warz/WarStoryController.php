@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Warz;
 
-use App\Models\Stories;
+use App\Models\Story;
 use App\Models\UserWarz;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ class WarStoryController extends WarController
 {
     public function removeStory($storyId): RedirectResponse
     {
-        $story = Stories::find($storyId);
+        $story = Story::find($storyId);
         if ($story) {
             $story->delete();
             return redirect()->back()->with('status', 'Story removed successfully!');
@@ -29,14 +29,14 @@ class WarStoryController extends WarController
             return redirect(route('warz', absolute: false))->withErrors(['War not found or you do not have permission to edit it.']);
         }
 
-        $stories = Stories::query()->forWarrior($id, Auth::id())->get();
+        $stories = Story::query()->forWarrior($id, Auth::id())->get();
 
         return view('warz.addStory', ['warz' => $war, 'stories' => $stories]);
     }
 
-    public function addStories(Request $request, $id): RedirectResponse
+    public function addStories(Request $request, Warz $war): RedirectResponse
     {
-        if (!UserWarz::hasWarAccess(Auth::id(), $id)) {
+        if (!UserWarz::hasWarAccess(Auth::id(), $war->id)) {
             return redirect(route('warz', absolute: false))->withErrors(['War not found or you do not have permission to edit it.']);
         }
 
@@ -47,22 +47,22 @@ class WarStoryController extends WarController
         foreach ($request->story as $key => $story) {
             if ($story) {
                 if (isset($request->story_id[$key])) {
-                    $oldStory = Stories::find($request->story_id[$key]);
+                    $oldStory = Story::find($request->story_id[$key]);
                     if (!$oldStory->story_was_used) {
                         $oldStory->fill(['story' => $story]);
                         $oldStory->save();
                     }
                 } else {
-                    Stories::create([
+                    Story::create([
                         'story' => $story,
                         'user_id' => Auth::id(),
-                        'warz_id' => $id,
+                        'warz_id' => $war->id,
                     ]);
                 }
             }
         }
 
-        $this->checkIfWarIsReadyToStart($id);
+        $this->checkIfWarIsReadyToStart($war->id);
 
         return redirect(route('warz'))->with('status', 'Stories added/updated successfully!');
     }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Warz;
 
 use App\Models\ShowRoundSummary;
-use App\Models\WarzRounds;
-use App\Models\WarzRoundsScores;
-use App\Models\WarzRoundsVotes;
-use App\Models\WarzWagers;
+use App\Models\WarzRound;
+use App\Models\WarzRoundsScore;
+use App\Models\WarzRoundsVote;
+use App\Models\WarzWager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,42 +15,49 @@ class WarRoundController extends WarController
 {
     public function vote(Request $request, $warId): RedirectResponse
     {
-        $warRound = WarzRounds::query()
+        $warRound = WarzRound::query()
             ->currentWithStory($warId)
             ->first();
 
-        $hasVoted = WarzRoundsVotes::where('warz_rounds_id', $warRound->round_id)->where('user_id', Auth::id())->exists();
+        $hasVoted = WarzRoundsVote::where('warz_rounds_id', $warRound->round_id)->where('user_id', Auth::id())->exists();
         if ($hasVoted) {
-            return redirect(route('warz.show', ['id' => $warId]));
+            return redirect(route('warz.show', ['war' => $warId]));
         }
 
-        WarzRoundsVotes::create([
+        WarzRoundsVote::create([
             'warz_rounds_id' => $warRound->round_id,
             'user_id' => Auth::id(),
             'warz_id' => $warId,
             'voted_for_user_id' => $request->user,
         ]);
 
-        $users = $this->getWarUsers($warId);
-        $votes = WarzRoundsVotes::where('warz_rounds_id', $warRound->round_id)->get();
-        $tiedUsers = $this->checkForTie($warId);
-
-        if ($tiedUsers && $request->wager) {
-            $wager = WarzWagers::where('user_id', Auth::id())->where('warz_id', $warId)->first();
-            if (!$wager) {
-                WarzWagers::create([
-                    'user_id' => Auth::id(),
-                    'warz_id' => $warId,
-                    'wager' => $request->wager,
-                ]);
-            } else {
-                $wager->wager = $request->wager;
-                $wager->save();
+        // if the max number of rounds has been reached, 
+        // check for tie and save wager if applicable
+        $storyNumber = WarzRound::storyNumber($warId);
+        if($storyNumber >= env('WAR_MAX_ROUNDS')) {
+            // If this is a tie round, save the user's wager
+            $tiedUsers = $this->checkForTie($warId);
+            if ($tiedUsers && $request->wager) {
+                $wager = WarzWager::where('user_id', Auth::id())->where('warz_id', $warId)->first();
+                if (!$wager) {
+                    WarzWager::create([
+                        'user_id' => Auth::id(),
+                        'warz_id' => $warId,
+                        'wager' => $request->wager,
+                    ]);
+                } else {
+                    $wager->wager = $request->wager;
+                    $wager->save();
+                }
             }
         }
 
+        // If everyone has voted for this round, calculate scores, 
+        // mark round complete, and create next round if applicable
+        $users = $this->getWarUsers($warId);
+        $votes = WarzRoundsVote::where('warz_rounds_id', $warRound->round_id)->get();
         if (count($users) == $votes->count()) {
-            $round = WarzRounds::where('id', $warRound->round_id)->first();
+            $round = WarzRound::where('id', $warRound->round_id)->first();
             $round->complete = true;
             $round->save();
 
@@ -59,29 +66,30 @@ class WarRoundController extends WarController
                 'warz_id' => $warId,
             ]);
 
-            $roundCount = WarzRounds::where('warz_id', $warId)->count();
-            $doublePoints = $this->isThisRoundDoublePoints($roundCount);
+            $storyNumber = WarzRound::storyNumber($warId);
+            $doublePoints = $this->isThisRoundDoublePoints($storyNumber);
             $userStoryScore = 0;
             $storyAuthor = $warRound->user_id;
+            $tiedUsers = $this->checkForTie($warId);
 
             foreach ($votes as $vote) {
-                if (!$tiedUsers || ($tiedUsers && in_array($vote->user_id, array_column($tiedUsers, 'id')))) {
+                if (!$tiedUsers || (exists($tiedUsers) && in_array($vote->user_id, array_column($tiedUsers, 'id')))) {
                     if ($vote->voted_for_user_id == $storyAuthor) {
                         if ($tiedUsers) {
-                            $wager = WarzWagers::where('user_id', $vote->user_id)->where('warz_id', $warId)->first();
+                            $wager = WarzWager::where('user_id', $vote->user_id)->where('warz_id', $warId)->first();
                             $score = $wager->wager;
                         } else {
                             $score = $doublePoints ? 4 : 2;
                         }
 
-                        WarzRoundsScores::create([
+                        WarzRoundsScore::create([
                             'user_id' => $vote->user_id,
                             'warz_rounds_id' => $warRound->round_id,
                             'warz_id' => $warId,
                             'score' => $score,
                         ]);
                     } elseif ($vote->user_id != $storyAuthor) {
-                        if (!$tiedUsers || ($tiedUsers && in_array($storyAuthor, array_column($tiedUsers, 'id')))) {
+                        if (!$tiedUsers || (exists($tiedUsers) && in_array($storyAuthor, array_column($tiedUsers, 'id')))) {
                             $userStoryScore += $doublePoints ? 2 : 1;
                         }
                     }
@@ -89,7 +97,7 @@ class WarRoundController extends WarController
             }
 
             if (!$tiedUsers || ($tiedUsers && in_array($storyAuthor, array_column($tiedUsers, 'id')))) {
-                WarzRoundsScores::create([
+                WarzRoundsScore::create([
                     'user_id' => $storyAuthor,
                     'warz_rounds_id' => $warRound->round_id,
                     'warz_id' => $warId,
@@ -100,6 +108,6 @@ class WarRoundController extends WarController
             $this->warRoundCreate($warId);
         }
 
-        return redirect(route('warz.show', ['id' => $warId]))->with('status', 'Your vote is in!');
+        return redirect(route('warz.show', ['war' => $warId]))->with('status', 'Your vote is in!');
     }
 }

@@ -129,8 +129,6 @@
                     </h3>
                     <p class="mb-4 text-xs text-gray-500 dark:text-gray-300">
                         Click to add/edit your stories. All participants must have 3-6 stories per war.
-                        Have to change this - can't view warz unless you created them
-                         - maybe add and change "Warz you've created"
                     </p>
 
                     <table class="w-full text-sm text-left rtl:text-right bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded">

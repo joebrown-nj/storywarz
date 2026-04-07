@@ -15,24 +15,18 @@ class WarManagementController extends WarController
         return view('warz.create');
     }
 
-    public function edit($warId): View | RedirectResponse
+    public function edit(Warz $war): View | RedirectResponse
     {
-        $war = Warz::where('id', $warId)->first();
-        if (!$war) {
-            return redirect(route('warz', absolute: false))->withErrors(['War not found or you do not have permission to edit it.']);
-        }
-
         return view('warz.edit', [
             'warz' => $war,
-            'users' => $this->getWarUsers($warId),
+            'users' => $this->getWarUsers($war->id),
         ]);
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(Request $request, Warz $war): RedirectResponse
     {
         $userExistsMessage = [];
 
-        $war = Warz::where('id', $request->id)->where('user_id', Auth::id())->first();
         $war->update($request->all());
 
         $users = $this->sendInvitations($war, $request);
@@ -79,15 +73,10 @@ class WarManagementController extends WarController
         return redirect(route('warz', ['warz' => $war->id], absolute: false));
     }
 
-    public function deleteWarrior($warId, $userId): RedirectResponse
+    public function deleteWarrior(Warz $war, $userId): RedirectResponse
     {
-        $war = Warz::where('id', $warId)->where('user_id', Auth::id())->first();
-        if (!$war) {
-            return redirect(route('warz', absolute: false))->withErrors(['War not found or you do not have permission to edit it.']);
-        }
-
         $war->users()->detach($userId);
 
-        return redirect(route('warz.edit', $warId, absolute: false))->with('status', 'Warrior removed successfully!');
+        return redirect(route('warz.edit', $war->id, absolute: false))->with('status', 'Warrior removed successfully!');
     }
 }
