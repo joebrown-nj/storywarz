@@ -1,0 +1,3 @@
+<a href="{{ $attributes['href'] ?? '#' }}" class="text-nowrap inline-flex items-center px-4 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-stone-50 dark:hover:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">
+    {{ $slot }}
+</a>

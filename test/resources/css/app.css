@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+/* @import "flowbite"; */
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
+
+/* @tailwind base; */
+/* @tailwind utilities; */
+
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+@import "flowbite/src/themes/default";
+
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+.glow-blue {
+  /* -webkit-animation: glow-blue 1s ease-in-out infinite alternate;
+  -moz-animation: glow-blue 1s ease-in-out infinite alternate;
+  animation: glow-blue 1s ease-in-out infinite alternate; */
+    text-shadow: 0 0 10px #4d5fff, 0 0 15px #4d59ff;
+}
+
+/* @-webkit-keyframes glow-blue {
+  from {
+    text-shadow: 0 0 2px #fff, 0 0 8px #0023e6, 0 0 15px #0023e6, 0 0 20px #0023e6;
+  }
+  to {
+    text-shadow: 0 0 10px #4d5fff, 0 0 15px #4d59ff, 0 0 20px #4d6eff, 0 0 25px #4d6eff;
+  }
+} */
+
+.glow-yellow{
+  /* -webkit-animation: glow-yellow 1s ease-in-out infinite alternate;
+  -moz-animation: glow-yellow 1s ease-in-out infinite alternate;
+  animation: glow-yellow 1s ease-in-out infinite alternate; */
+    text-shadow: 0 0 10px #d4ff00, 0 0 15px #d4ff00;
+}
+
+/* @-webkit-keyframes glow-yellow {
+  from {
+    text-shadow: 0 0 2px #fff, 0 0 8px #fff, 0 0 15px #a9e600, 0 0 20px #a9e600;
+  }
+  to {
+    text-shadow: 0 0 10px #d4ff00, 0 0 15px #d4ff00, 0 0 20px #d4ff00, 0 0 25px #d4ff00;
+  }
+} */
