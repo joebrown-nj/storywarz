@@ -53,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function warz(): BelongsToMany
     {
-        return $this->belongsToMany(Warz::class);
+        return $this->belongsToMany(Warz::class, 'user_warz', 'user_id', 'warz_id');
     }
 
     public function messageSettings()

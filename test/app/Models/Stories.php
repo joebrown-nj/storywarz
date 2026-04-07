@@ -4,14 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Stories extends Authenticatable
+class Stories extends Model
 {
     /** @use HasFactory<\Database\Factories\StoryFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -37,14 +36,14 @@ class Stories extends Authenticatable
         ];
     }
 
-    public function war(): HasOne
+    public function war(): BelongsTo
     {
-        return $this->hasOne(Warz::class, 'id', 'warz_id');
+        return $this->belongsTo(Warz::class, 'warz_id');
     }
 
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function scopeForWarrior(Builder $query, int $warId, int $userId): Builder

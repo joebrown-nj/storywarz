@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 
-class UserWarz extends Authenticatable
+class UserWarz extends Model
 {
     /** @use HasFactory<\Database\Factories\UserWarzFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+
     protected $table = 'user_warz';
 
     /**
@@ -31,6 +31,16 @@ class UserWarz extends Authenticatable
      * @var bool
      */
     public $timestamps = false;
+
+    public function war(): BelongsTo
+    {
+        return $this->belongsTo(Warz::class, 'warz_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     public function scopeForDashboard(Builder $query, int $userId): Builder
     {

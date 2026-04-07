@@ -3,14 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class WarzWagers extends Authenticatable
+class WarzWagers extends Model
 {
     /** @use HasFactory<\Database\Factories\WarzFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +19,7 @@ class WarzWagers extends Authenticatable
     protected $fillable = [
         'user_id',
         'warz_id',
-        'wager'
+        'wager',
     ];
 
     /**
@@ -29,4 +28,14 @@ class WarzWagers extends Authenticatable
      * @var bool
      */
     public $timestamps = false;
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function war(): BelongsTo
+    {
+        return $this->belongsTo(Warz::class, 'warz_id');
+    }
 }

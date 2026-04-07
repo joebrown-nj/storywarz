@@ -3,14 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class WarzRoundsScores extends Authenticatable
+class WarzRoundsScores extends Model
 {
     /** @use HasFactory<\Database\Factories\WarzFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -30,4 +29,19 @@ class WarzRoundsScores extends Authenticatable
      * @var bool
      */
     public $timestamps = false;
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function round(): BelongsTo
+    {
+        return $this->belongsTo(WarzRounds::class, 'warz_rounds_id');
+    }
+
+    public function war(): BelongsTo
+    {
+        return $this->belongsTo(Warz::class, 'warz_id');
+    }
 }

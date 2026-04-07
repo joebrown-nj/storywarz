@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class Warz extends Authenticatable
+class Warz extends Model
 {
     /** @use HasFactory<\Database\Factories\WarzFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -39,16 +39,14 @@ class Warz extends Authenticatable
         ];
     }
 
-    public function host()
+    public function host(): BelongsTo
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function users(): HasMany
+    public function users(): BelongsToMany
     {
-        // return $this->belongsToMany(User::class);
-        // return $this->hasMany(Warrior::class, 'user_id', 'id');
-        return $this->HasMany(User::class);
+        return $this->belongsToMany(User::class, 'user_warz', 'warz_id', 'user_id');
     }
 
     public function stories(): HasMany

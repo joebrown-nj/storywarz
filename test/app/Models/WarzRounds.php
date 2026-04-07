@@ -4,14 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class WarzRounds extends Authenticatable
+class WarzRounds extends Model
 {
     /** @use HasFactory<\Database\Factories\WarzFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +20,7 @@ class WarzRounds extends Authenticatable
     protected $fillable = [
         'warz_id',
         'stories_id',
-        'complete'
+        'complete',
     ];
 
     /**
@@ -30,6 +29,16 @@ class WarzRounds extends Authenticatable
      * @var bool
      */
     public $timestamps = false;
+
+    public function war(): BelongsTo
+    {
+        return $this->belongsTo(Warz::class, 'warz_id');
+    }
+
+    public function story(): BelongsTo
+    {
+        return $this->belongsTo(Stories::class, 'stories_id');
+    }
 
     public function scopeCurrentWithStory(Builder $query, int $warId): Builder
     {

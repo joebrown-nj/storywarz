@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Warz;
 
 use App\Models\Warz;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,8 +75,6 @@ class WarManagementController extends WarController
         foreach ($users as $user) {
             $war->users()->attach($user->id);
         }
-
-        event(new Registered($war));
 
         return redirect(route('warz', ['warz' => $war->id], absolute: false));
     }

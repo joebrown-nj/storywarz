@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ShowRoundSummary extends Authenticatable
+class ShowRoundSummary extends Model
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+
     protected $table = 'show_round_summary';
 
     /**
@@ -30,4 +30,13 @@ class ShowRoundSummary extends Authenticatable
      */
     public $timestamps = false;
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function war(): BelongsTo
+    {
+        return $this->belongsTo(Warz::class, 'warz_id');
+    }
 }

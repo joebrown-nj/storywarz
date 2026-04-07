@@ -4,15 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 
-class WarzRoundsVotes extends Authenticatable
+class WarzRoundsVotes extends Model
 {
     /** @use HasFactory<\Database\Factories\WarzFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +22,7 @@ class WarzRoundsVotes extends Authenticatable
         'warz_rounds_id',
         'user_id',
         'warz_id',
-        'voted_for_user_id'
+        'voted_for_user_id',
     ];
 
     /**
@@ -32,6 +31,26 @@ class WarzRoundsVotes extends Authenticatable
      * @var bool
      */
     public $timestamps = false;
+
+    public function round(): BelongsTo
+    {
+        return $this->belongsTo(WarzRounds::class, 'warz_rounds_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function war(): BelongsTo
+    {
+        return $this->belongsTo(Warz::class, 'warz_id');
+    }
+
+    public function votedFor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'voted_for_user_id');
+    }
 
     public function scopeWithVoteDetails(Builder $query): Builder
     {

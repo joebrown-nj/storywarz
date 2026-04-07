@@ -3,14 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class MessageSettings extends Authenticatable
+class MessageSettings extends Model
 {
     /** @use HasFactory<\Database\Factories\MessageSettingsFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -36,10 +35,5 @@ class MessageSettings extends Authenticatable
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function messageSettings()
-    {
-        return $this->hasOne(MessageSettings::class);
     }
 }
