@@ -62,8 +62,11 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 https://app.brevo.com/settings/keys/smtp
 
+## Running the app
+
+npm install
+npm run build
+npm run dev
 
 php artisan serve
-
-npm install && npm run build && npm run dev
 
