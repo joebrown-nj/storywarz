@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Stories extends Model
+class Story extends Model
 {
     /** @use HasFactory<\Database\Factories\StoryFactory> */
     use HasFactory;
