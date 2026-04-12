@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Warz;
 
 use App\Models\Story;
 use App\Models\UserWarz;
+use App\Models\Warz;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

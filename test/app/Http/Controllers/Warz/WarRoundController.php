@@ -73,7 +73,7 @@ class WarRoundController extends WarController
             $tiedUsers = $this->checkForTie($warId);
 
             foreach ($votes as $vote) {
-                if (!$tiedUsers || (exists($tiedUsers) && in_array($vote->user_id, array_column($tiedUsers, 'id')))) {
+                if (!$tiedUsers || ($tiedUsers && in_array($vote->user_id, array_column($tiedUsers, 'id')))) {
                     if ($vote->voted_for_user_id == $storyAuthor) {
                         if ($tiedUsers) {
                             $wager = WarzWager::where('user_id', $vote->user_id)->where('warz_id', $warId)->first();
@@ -89,7 +89,7 @@ class WarRoundController extends WarController
                             'score' => $score,
                         ]);
                     } elseif ($vote->user_id != $storyAuthor) {
-                        if (!$tiedUsers || (exists($tiedUsers) && in_array($storyAuthor, array_column($tiedUsers, 'id')))) {
+                        if (!$tiedUsers || ($tiedUsers && in_array($storyAuthor, array_column($tiedUsers, 'id')))) {
                             $userStoryScore += $doublePoints ? 2 : 1;
                         }
                     }

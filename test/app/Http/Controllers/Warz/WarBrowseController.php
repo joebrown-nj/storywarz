@@ -96,31 +96,27 @@ class WarBrowseController extends WarController
         ]);
     }
 
-    public function nextStory($warId): RedirectResponse
+    public function nextStory(Warz $war): RedirectResponse
     {
-        $remove = ShowRoundSummary::where('user_id', Auth::id());
-        $remove->delete();
-
-        return redirect(route('warz.show', $warId));
+        $remove = ShowRoundSummary::where('user_id', Auth::id())->where('warz_id', $war->id)->first();
+        if ($remove) {
+            $remove->delete();
+        }
+        return redirect(route('warz.show', $war->id));
     }
 
-    public function comment(Request $request, $id): RedirectResponse
+    public function comment(Request $request, Warz $war): RedirectResponse
     {
         $request->validate([
             'comment' => ['required', 'string', 'max:1000'],
         ]);
 
-        $war = Warz::find($id);
-        if (!$war) {
-            return redirect(route('warz', absolute: false))->withErrors(['War not found.']);
-        }
-
         $war->comments()->create([
             'user_id' => Auth::id(),
-            'warz_id' => $id,
+            'warz_id' => $war->id,
             'comment' => $request->comment,
         ]);
 
-        return redirect(route('warz.show', ['id' => $id], absolute: false))->with('status', 'Comment added successfully!');
+        return redirect(route('warz.show', $war->id))->with('status', 'Comment added successfully!');
     }
 }
