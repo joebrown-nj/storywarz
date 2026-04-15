@@ -20,7 +20,7 @@
                         {{ __("Create a war and invite your friends to join you!") }}
                     </p>
 
-                    <form method="POST" action="{{ route('warz') }}">
+                    <form method="POST" action="{{ route('warz.store') }}">
                         @csrf
 
                         <div>

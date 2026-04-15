@@ -141,7 +141,7 @@ class WarController extends Controller
                 ]);
                 event(new Registered($users[count($users) - 1]));
 
-                Mail::to($contact)->send(new WarriorInvitation($war, $users[count($users) - 1]));
+                // Mail::to($contact)->send(new WarriorInvitation($war, $users[count($users) - 1]));
                 continue;
             }
 

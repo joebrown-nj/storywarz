@@ -18,6 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('create', 'create')->name('warz.create');
             Route::get('edit/{war}', 'edit')->name('warz.edit');
             Route::patch('update/{war}', 'update')->name('warz.update');
+            Route::post('store', 'store')->name('warz.store');
         });
 
         Route::controller(WarBrowseController::class)->group(function () {
