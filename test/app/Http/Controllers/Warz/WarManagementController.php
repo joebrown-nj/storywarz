@@ -7,6 +7,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class WarManagementController extends WarController
 {
@@ -17,6 +19,7 @@ class WarManagementController extends WarController
 
     public function edit(Warz $war): View | RedirectResponse
     {
+        Gate::allowIf(fn (User $user) => $user->id === $war->user_id);
         return view('warz.edit', [
             'warz' => $war,
             'users' => $this->getWarUsers($war->id),
@@ -25,6 +28,7 @@ class WarManagementController extends WarController
 
     public function update(Request $request, Warz $war): RedirectResponse
     {
+        Gate::allowIf(fn (User $user) => $user->id === $war->user_id);
         $userExistsMessage = [];
 
         $war->update($request->all());
@@ -75,6 +79,7 @@ class WarManagementController extends WarController
 
     public function deleteWarrior(Warz $war, $userId): RedirectResponse
     {
+        Gate::allowIf(fn (User $user) => $user->id === $war->user_id);
         $war->users()->detach($userId);
 
         return redirect(route('warz.edit', $war->id, absolute: false))->with('status', 'Warrior removed successfully!');
