@@ -11,7 +11,7 @@
                 <div class="mr-6 ml-6 lg:flex-1 lg:p-4 sm:p-1 lg:w-14 bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 dark:text-gray-100">
                         This war is in progress and cannot be edited. 
-                        <x-secondary-link href="{{ route('warz.show', $warz->id) }}">
+                        <x-secondary-link href="{{ route('warz.show', $warz) }}">
                             {{ __('Go to War') }}
                         </x-secondary-link>
                     </div>
@@ -102,7 +102,7 @@
                                                         </li> --}}
                                                         <li class="text-sm text-gray-500 dark:text-gray-400">
                                                             @if ($warrior->id != $warz->user_id)
-                                                                <a href="{{ route('warrior.delete', ['warId' => $warz->id, 'userId' => $warrior->id]) }}" class="db-remove-warrior text-sm text-red-500 hover:underline">
+                                                                <a href="{{ route('warrior.delete', [$warz, 'userId' => $warrior->id]) }}" class="db-remove-warrior text-sm text-red-500 hover:underline">
                                                                     Delete
                                                                 </a>
                                                             @endif

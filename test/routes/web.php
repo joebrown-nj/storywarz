@@ -39,7 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('{war}/addStories', 'addStories')->name('warz.addStories');
         });
 
-        Route::post('{warId}/vote', [WarRoundController::class, 'vote'])->name('warz.vote');
+        Route::post('{war}/vote', [WarRoundController::class, 'vote'])->name('warz.vote');
     });
 
     Route::controller(ProfileController::class)->group(function () {

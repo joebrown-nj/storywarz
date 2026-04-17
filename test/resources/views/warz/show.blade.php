@@ -85,7 +85,7 @@
                                     <x-show-who-user-voted-for :votes=$votes :u=$u/>
                                 </center>
 
-                                <form id="form-{{ $u->id }}" action="{{ route('warz.vote', ['warId' => $war->id]) }}" method="post">
+                                <form id="form-{{ $u->id }}" action="{{ route('warz.vote', $war) }}" method="post">
                                     @csrf
                                     @method('post')
                                     <input type="hidden" name="user" value="{{ $u->id }}" />

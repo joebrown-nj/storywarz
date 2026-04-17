@@ -45,7 +45,7 @@ $(document).on('click', '#addStoryButton', function() {
     var newStoryInput = $('div.story-inputs-hidden').clone();
     newStoryInput.removeClass('story-inputs-hidden hidden');
     newStoryInput.addClass('story-inputs');
-    $('div.story-inputs').last().after(newStoryInput);
+    $('form.add-stories-form input').last().after(newStoryInput);
     newStoryInput.find('textarea').focus();
 });
 

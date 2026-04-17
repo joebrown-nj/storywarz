@@ -22,7 +22,7 @@ class WarriorInvitationController extends Controller
 
     public function generateInvitation()
     {
-        $invitationLink = route('warz.show', ['id' => $this->war->id], absolute: true);
+        $invitationLink = route('warz.show', $this->war, absolute: true);
         die($invitationLink);
     }
 }

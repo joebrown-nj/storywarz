@@ -47,7 +47,7 @@ class WarBrowseController extends WarController
         }
 
         if ($this->showRoundSummary($war->id)) {
-            return redirect(route('warz.showSummary', $war->id));
+            return redirect(route('warz.showSummary', $war));
         }
 
         $story = WarzRound::query()
@@ -77,7 +77,7 @@ class WarBrowseController extends WarController
     public function summary(Warz $war): View | RedirectResponse
     {
         if (!$this->showRoundSummary($war->id)) {
-            return redirect(route('warz.show', $war->id));
+            return redirect(route('warz.show', $war));
         }
 
         $lastRound = WarzRound::query()->latestCompleted($war->id)->first();
@@ -102,7 +102,7 @@ class WarBrowseController extends WarController
         if ($remove) {
             $remove->delete();
         }
-        return redirect(route('warz.show', $war->id));
+        return redirect(route('warz.show', $war));
     }
 
     public function comment(Request $request, Warz $war): RedirectResponse
@@ -117,6 +117,6 @@ class WarBrowseController extends WarController
             'comment' => $request->comment,
         ]);
 
-        return redirect(route('warz.show', $war->id))->with('status', 'Comment added successfully!');
+        return redirect(route('warz.show', $war))->with('status', 'Comment added successfully!');
     }
 }

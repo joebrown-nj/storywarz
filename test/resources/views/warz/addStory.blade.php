@@ -24,7 +24,7 @@
                     {!! __('You are a warrior in this war. Please submit 3-6 stories related to the topic <b>'.$warz->topic.'</b>.') !!}
                 </p>
 
-                <form method="post" action="{{ route('warz.addStories', $warz->id) }}" class="mt-6 space-y-6">
+                <form method="post" action="{{ route('warz.addStories', $warz->id) }}" class="mt-6 space-y-6 add-stories-form">
                     @csrf
                     @method('patch')
 

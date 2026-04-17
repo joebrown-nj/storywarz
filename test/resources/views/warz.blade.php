@@ -47,9 +47,9 @@
                                     class="@if ($war->status != 'created') dark:bg-red-950/40 hover:dark:bg-red-950/60 @else odd:bg-stone-800 even:bg-stone-700 @endif border-b border-stone-300 dark:border-stone-700 cursor-pointer"
                                     onClick="window.location=
                                         @if ($war->status == 'created')
-                                            '{{ route('warz.edit', $war->warz_id) }}'
+                                            '{{ route('warz.edit', $war) }}'
                                         @else
-                                            '{{ route('warz.show', $war->warz_id) }}'
+                                            '{{ route('warz.show', $war) }}'
                                         @endif
                                 ">
                                     <td class="px-6 py-4">{{ $war->topic }}</td>
@@ -57,19 +57,6 @@
                                     <td class="px-6 py-4">{{ $war->round_count }}</td>
                                     <td class="px-6 py-4">{{ $war->name }}</td>
                                     <td class="px-6 py-4">{{ date('n/d', strtotime($war->created_at)) }}</td>
-                                    {{-- <td class="px-6 py-4">
-                                        @if ($war->status == 'active')
-                                            <a href="{{ route('warz.show', $war->id) }}" 
-                                                class="text-nowrap inline-flex items-center px-4 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-red-800 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-stone-50 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150"
-                                            >
-                                                View War
-                                            </a>
-                                        @else
-                                            <x-secondary-link href="{{ route('warz.edit', $war->id) }}">
-                                                Edit
-                                            </x-secondary-link>
-                                        @endif
-                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
@@ -150,21 +137,6 @@
                                     <td class="px-6 py-4">{{ $war->topic }}</td>
                                     <td class="px-6 py-4">{{ $war->host_name }}</td>
                                     <td class="px-6 py-4">{{ $war->story_count }}</td>
-                                    {{-- <td class="px-6 py-4">{{ $war->status }}</td> --}}
-                                    {{-- 
-                                    <td class="px-6 py-4">
-                                        @if ($war->story_count >= 3)
-                                            <a href="{{ route('warz.show', $war->id) }}"
-                                                class="text-nowrap inline-flex items-center px-4 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-red-800 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-stone-50 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150"
-                                            >
-                                                View War
-                                            </a>
-                                        @else
-                                            <x-secondary-link href="{{ route('warz.addStoryForm', $war->id) }}">
-                                                Add Stories
-                                            </x-secondary-link>
-                                        @endif
-                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
