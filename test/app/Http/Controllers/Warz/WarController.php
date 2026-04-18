@@ -8,7 +8,7 @@ use App\Models\Story;
 use App\Models\User;
 use App\Models\Warz;
 use App\Models\WarzRound;
-use App\Models\WarzRoundsVote;
+use App\Models\WarzRoundVote;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,7 +26,7 @@ class WarController extends Controller
 
     protected function getWarRoundVotes($warRoundId)
     {
-        return WarzRoundsVote::query()
+        return WarzRoundVote::query()
             ->withVoteDetails()
             ->forRound($warRoundId)
             ->get();
@@ -82,7 +82,7 @@ class WarController extends Controller
             $users = $this->getWarUsers($warId);
             foreach ($users as $user) {
                 if ($user->score < $users[0]->score) {
-                    WarzRoundsVote::create([
+                    WarzRoundVote::create([
                         'warz_rounds_id' => $nextRound->id,
                         'user_id' => $user->id,
                         'warz_id' => $warId,

@@ -7,8 +7,8 @@ use App\Models\Story;
 use App\Models\UserWarz;
 use App\Models\Warz;
 use App\Models\WarzRound;
-use App\Models\WarzRoundsScore;
-use App\Models\WarzRoundsVote;
+use App\Models\WarzRoundScore;
+use App\Models\WarzRoundVote;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,10 +67,10 @@ class WarBrowseController extends WarController
             'doublePoints' => $this->isThisRoundDoublePoints($storyNumber),
             'comments' => $war->comments()->orderBy('created_at', 'desc')->get(),
             'story' => $story,
-            'youVotedFor' => WarzRoundsVote::findUserVoteForRound(Auth::id(), $story->warz_rounds_id),
+            'youVotedFor' => WarzRoundVote::findUserVoteForRound(Auth::id(), $story->warz_rounds_id),
             'votes' => $this->getWarRoundVotes($story->warz_rounds_id),
             'tie' => $storyNumber >= env('WAR_MAX_ROUNDS') ? $this->checkForTie($war->id) : false,
-            'yourScore' => WarzRoundsScore::where('user_id', Auth::id())->where('warz_id', $war->id)->sum('score'),
+            'yourScore' => WarzRoundScore::where('user_id', Auth::id())->where('warz_id', $war->id)->sum('score'),
         ]);
     }
 

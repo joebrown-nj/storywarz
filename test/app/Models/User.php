@@ -66,7 +66,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $query->select(
             'users.*',
             DB::raw('count(stories.id) as story_count'),
-            DB::raw('(SELECT sum(score) from warz_rounds_scores where warz_rounds_scores.user_id = users.id and warz_rounds_scores.warz_id = ' . $warId . ') as score')
+            DB::raw('(SELECT sum(score) from warz_round_scores where warz_round_scores.user_id = users.id and warz_round_scores.warz_id = ' . $warId . ') as score')
         )
             ->join('user_warz', 'users.id', '=', 'user_warz.user_id')
             ->leftJoin('stories', function ($join) {
