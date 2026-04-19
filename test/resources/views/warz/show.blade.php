@@ -66,7 +66,7 @@
                 @foreach($users as $u)
                     @if($u->id != Auth::id())
                         @if($youVotedFor)
-                            <div class="@if($youVotedFor->voted_for_user_id == $u->id) border-red-600 bg-stone-700/50 shadow-md shadow-red-800/50 dark:shadow-md dark:shadow-red-800/80 @endif w-32 max-w-sm border border-stone-600 items-center justify-center overflow-hidden rounded-xl">
+                            <div class="@if($youVotedFor->voted_for_user_id == $u->id) border-red-600 bg-stone-700/50 shadow-md shadow-red-800/50 dark:shadow-md dark:shadow-red-800/80 @else border-stone-600 @endif w-32 max-w-sm border items-center justify-center overflow-hidden rounded-xl">
                                 <center class="@if($youVotedFor->voted_for_user_id == $u->id) bg-stone-600/50 @else bg-stone-600/10 @endif pt-4 h-full">
                                     <x-user-avatar :user="$u" :width=64 />
                                     <p class="my-4 text-center text-base/5 font-semibold tracking-tight text-white">
